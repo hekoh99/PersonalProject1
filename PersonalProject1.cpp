@@ -39,22 +39,22 @@ int makeRandom() {
 
 int checkPass(int num) {
 
-	if (num == 0 && ((thingX >= 40 && thingX <= 80) ||(thingX >=430 && thingX <=460))) {
+	if (num == 0 && ((thingX >= 40 && thingX <= 80) ||(thingX >=430 && thingX <=460) || (thingX >=1060 && thingX <= 1180))) {
 		return 1;
 	}
-	else if (num == 1 && ((thingX >= 490 && thingX <= 530))) {
+	else if (num == 1 && ((thingX >= 490 && thingX <= 530) || (thingX >=30 && thingX <= 100) || (thingX >= 1050 && thingX <= 1110))) {
 		return 1;
 	}
 	else if (num == 2 && ((thingX >= 630 && thingX <= 670) || (thingX >= 1050 && thingX <= 1090))) {
 		return 1;
 	}
-	else if (num == 3 && ((thingX >= 250 && thingX <= 290) || (thingX >= 1130 && thingX <= 1160))) {
+	else if (num == 3 && ((thingX >= 250 && thingX <= 290) || (thingX >= 1130 && thingX <= 1160) || (thingX >=910 && thingX <=1000))) {
 		return 1;
 	}
-	else if (num == 4 && ((thingX >= 770 && thingX <= 810))) {
+	else if (num == 4 && ((thingX >= 770 && thingX <= 810) || (thingX >= 110 && thingX <= 230) || (thingX >= 1150))) {
 		return 1;
 	}
-	else if (num == 5 && ((thingX >= 0 && thingX <= 20) || (thingX >= 1030 && thingX <= 1050))) {
+	else if (num == 5 && ((thingX >= 0 && thingX <= 20) || (thingX >= 1030 && thingX <= 1050) || (thingX >=520 || thingX <= 540))) {
 		return 1;
 	}
 	else {
@@ -168,7 +168,8 @@ int main(void) {
 	startbtn->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
 
 		isPlaying = 1;
-
+		thingX = 550;
+		thingY = 20;
 		for (int i = 0; i < 6; i++) {
 			string filename = "images/바" + to_string(i + 1) + ".png";
 
@@ -178,6 +179,7 @@ int main(void) {
 		int n = makeRandom();
 		
 		fallingBar(Bar[n], 10, n);
+		thing->locate(scene1, thingX, thingY);
 
 		hideTimer();
 		Gametime = createTimer(3600.0f);
