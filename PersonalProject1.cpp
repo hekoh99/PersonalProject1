@@ -13,17 +13,29 @@ using namespace std;
 #define LEFT 82
 #define RIGHT 83
 
-ScenePtr scene1;
+int isPlaying = 0;
+float highScore = 0;
+
+ScenePtr scene1, startscene;
 ScenePtr endscene;
-ObjectPtr thing;
+ObjectPtr thing, startbtn;
 int thingX;
 int thingY = 20;
 int hight[6];
 int fin = 0;
 TimerID Gametime;
 
+
 ObjectPtr Bar[6];
 int fallingBarY;
+
+int makeRandom() {
+	int n;
+	srand((unsigned int)time(NULL));
+	n = rand() % 6;
+	
+	return n;
+}
 
 int checkPass(int num) {
 
@@ -54,60 +66,83 @@ void fallingBar(ObjectPtr bar, int level, int barN) {
 	hight[barN] = 720;
 	bar->locate(scene1, 0, 720);
 	bar->show();
-	auto timer = Timer::create(0.01f * level);
+	auto timer = Timer::create(0.01*level);
 	timer->setOnTimerCallback([=](TimerPtr t)->bool {
 
-		if (hight[barN] >= -20) {
-			if (hight[barN] >= 20 && hight[barN] <= 90) {
-				if (checkPass(barN) == 0) {
-					endscene->enter();
+		if (isPlaying == 1) {
+			if (hight[barN] >= -20) {
+				if (hight[barN] >= 20 && hight[barN] <= 90) {
+					if (checkPass(barN) == 0) {
+						cout << "fine" << endl;
+						bar->hide();
+						isPlaying = 2;
+						stopTimer(Gametime);
+						timer->stop();
+						float time = 3600 - getTimer(Gametime);
+						cout << "time : " << time << endl;
+						endscene->enter();
+						setTimer(Gametime, time);
+						showTimer(Gametime);
+						if (highScore < time) {
+							highScore = time;
+							showMessage("최고 기록 갱신!!");
+						}
+						startbtn->locate(endscene, 500, 200);
+						startbtn->setImage("images/restart.png");
+					}
+					else {
+						bar->locate(scene1, 0, hight[barN]);
+						hight[barN] -= 10;
+						t->set(0.01f * level);
+						t->start();
+					}
 				}
 				else {
 					bar->locate(scene1, 0, hight[barN]);
 					hight[barN] -= 10;
-					t->set(0.01f * level);
+					t->set(0.01 * level);
 					t->start();
 				}
 			}
-			else {
-				bar->locate(scene1, 0, hight[barN]);
-				hight[barN] -= 10;
-				t->set(0.01f * level);
-				t->start();
+			if (hight[barN] <= -30) {
+				bar->hide();
+				fallingBar(Bar[(barN + 1) % 6], level, (barN + 1) % 6);
 			}
-		}
-		if (hight[barN] <= -30) {
-			bar->hide();
-			fallingBar(Bar[(barN+1)%6], level, (barN+1)%6);
-		}
+		}		
 		return true;
 	});
 	timer->start();
 }
 
+
 void keyboardCallback(KeyCode x, KeyState) {
-	if (x == LEFT) {
-		thingX -= 10;
-		if (thingX <= 0) {
-			thingX = 0;
+	if (isPlaying == 1) {
+		if (x == LEFT) {
+			thingX -= 10;
+			if (thingX <= 0) {
+				thingX = 0;
+			}
+			thing->locate(scene1, thingX, thingY);
+			cout << "here : " << thingX << endl;
 		}
-		thing->locate(scene1, thingX, thingY);
-		cout << "here : " <<thingX << endl;
-	}
-	else if (x == RIGHT) {
-		thingX += 10;
-		if (thingX >= 1196) {
-			thingX = 1196;
+		else if (x == RIGHT) {
+			thingX += 10;
+			if (thingX >= 1196) {
+				thingX = 1196;
+			}
+			thing->locate(scene1, thingX, thingY);
+			cout << "here : " << thingX << endl;
 		}
-		thing->locate(scene1, thingX, thingY);
-		cout << "here : " << thingX << endl;
+
 	}
+	
 }
+
 
 int main(void) {
     
 	setKeyboardCallback(keyboardCallback);
-	
+
 	setGameOption(GameOption::GAME_OPTION_INVENTORY_BUTTON, false);
 	setGameOption(GameOption::GAME_OPTION_MESSAGE_BOX_BUTTON, false);
 	setGameOption(GameOption::GAME_OPTION_ROOM_TITLE, false);
@@ -115,11 +150,13 @@ int main(void) {
 	thingX = 550;
 
 	scene1 = Scene::create("1", "images/바탕.png");
-	auto startscene = Scene::create("1", "images/시작화면.png");
-	auto startbtn = Object::create("images/start.png", startscene, 600, 300);
+	startscene = Scene::create("1", "images/시작화면.png");
+	startbtn = Object::create("images/start.png", startscene, 600, 300);
+
 	endscene = Scene::create("1", "images/gameover.png");
 	thing = Object::create("images/별.png", scene1, thingX, thingY);
-	auto endbtn = Object::create("images/end.png", endscene, 600, 100);
+
+	auto endbtn = Object::create("images/end.png", endscene, 700, 200);
 
 	endbtn->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
 		endGame();
@@ -130,20 +167,20 @@ int main(void) {
 
 	startbtn->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
 
+		isPlaying = 1;
+
 		for (int i = 0; i < 6; i++) {
 			string filename = "images/바" + to_string(i + 1) + ".png";
 
 			Bar[i] = Object::create(filename, scene1, 10, 720);
 		}
 
-		int n;
-		srand((unsigned int)time(0));
-		n = rand() % 6;
-		cout << n << endl;
+		int n = makeRandom();
+		
 		fallingBar(Bar[n], 10, n);
 
 		hideTimer();
-		setTimer(Gametime, 3600.0f);
+		Gametime = createTimer(3600.0f);
 		startTimer(Gametime);
 
 		startGame(scene1);
