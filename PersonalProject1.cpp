@@ -130,7 +130,6 @@ void keyboardCallback(KeyCode x, KeyState) {
 			}
 			thing->locate(scene1, thingX, thingY);
 		}
-
 	}
 	
 }
