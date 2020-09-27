@@ -73,7 +73,6 @@ void fallingBar(ObjectPtr bar, int level, int barN) {
 			if (hight[barN] >= -20) {
 				if (hight[barN] >= 20 && hight[barN] <= 90) {
 					if (checkPass(barN) == 0) {
-						cout << "fine" << endl;
 						bar->hide();
 						isPlaying = 2;
 						stopTimer(Gametime);
@@ -123,7 +122,6 @@ void keyboardCallback(KeyCode x, KeyState) {
 				thingX = 0;
 			}
 			thing->locate(scene1, thingX, thingY);
-			cout << "here : " << thingX << endl;
 		}
 		else if (x == RIGHT) {
 			thingX += 10;
@@ -131,7 +129,6 @@ void keyboardCallback(KeyCode x, KeyState) {
 				thingX = 1196;
 			}
 			thing->locate(scene1, thingX, thingY);
-			cout << "here : " << thingX << endl;
 		}
 
 	}
