@@ -1,4 +1,4 @@
-﻿#include <bangtal.h>
+﻿#include <bangtal>
 #include <iostream>
 #include <conio.h>
 #include <string.h>
