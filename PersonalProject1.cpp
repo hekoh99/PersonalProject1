@@ -33,28 +33,28 @@ int makeRandom() {
 	int n;
 	srand((unsigned int)time(NULL));
 	n = rand() % 6;
-	
+
 	return n;
 }
 
 int checkPass(int num) {
 
-	if (num == 0 && ((thingX >= 40 && thingX <= 80) ||(thingX >=430 && thingX <=460) || (thingX >=1060 && thingX <= 1180))) {
+	if (num == 0 && ((thingX >= 40 && thingX <= 80) || (thingX >= 430 && thingX <= 460) || (thingX >= 1060 && thingX <= 1180))) {
 		return 1;
 	}
-	else if (num == 1 && ((thingX >= 490 && thingX <= 530) || (thingX >=30 && thingX <= 100) || (thingX >= 1050 && thingX <= 1110))) {
+	else if (num == 1 && ((thingX >= 490 && thingX <= 530) || (thingX >= 30 && thingX <= 100) || (thingX >= 1050 && thingX <= 1110))) {
 		return 1;
 	}
 	else if (num == 2 && ((thingX >= 630 && thingX <= 670) || (thingX >= 1050 && thingX <= 1090))) {
 		return 1;
 	}
-	else if (num == 3 && ((thingX >= 250 && thingX <= 290) || (thingX >= 1130 && thingX <= 1160) || (thingX >=910 && thingX <=1000))) {
+	else if (num == 3 && ((thingX >= 250 && thingX <= 290) || (thingX >= 1130 && thingX <= 1160) || (thingX >= 910 && thingX <= 1000))) {
 		return 1;
 	}
 	else if (num == 4 && ((thingX >= 770 && thingX <= 810) || (thingX >= 110 && thingX <= 230) || (thingX >= 1150))) {
 		return 1;
 	}
-	else if (num == 5 && ((thingX >= 0 && thingX <= 20) || (thingX >= 1030 && thingX <= 1050) || (thingX >=520 || thingX <= 540))) {
+	else if (num == 5 && ((thingX >= 0 && thingX <= 20) || (thingX >= 1030 && thingX <= 1050) || (thingX >= 520 && thingX <= 540))) {
 		return 1;
 	}
 	else {
@@ -66,7 +66,7 @@ void fallingBar(ObjectPtr bar, int level, int barN) {
 	hight[barN] = 720;
 	bar->locate(scene1, 0, 720);
 	bar->show();
-	auto timer = Timer::create(0.01*level);
+	auto timer = Timer::create(0.01 * level);
 	timer->setOnTimerCallback([=](TimerPtr t)->bool {
 
 		if (isPlaying == 1) {
@@ -107,9 +107,9 @@ void fallingBar(ObjectPtr bar, int level, int barN) {
 				bar->hide();
 				fallingBar(Bar[(barN + 1) % 6], level, (barN + 1) % 6);
 			}
-		}		
+		}
 		return true;
-	});
+		});
 	timer->start();
 }
 
@@ -131,12 +131,12 @@ void keyboardCallback(KeyCode x, KeyState) {
 			thing->locate(scene1, thingX, thingY);
 		}
 	}
-	
+
 }
 
 
 int main(void) {
-    
+
 	setKeyboardCallback(keyboardCallback);
 
 	setGameOption(GameOption::GAME_OPTION_INVENTORY_BUTTON, false);
@@ -159,7 +159,7 @@ int main(void) {
 		return true;
 		});
 
-	
+
 
 	startbtn->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
 
@@ -173,7 +173,7 @@ int main(void) {
 		}
 
 		int n = makeRandom();
-		
+
 		fallingBar(Bar[n], 10, n);
 		thing->locate(scene1, thingX, thingY);
 
@@ -187,5 +187,5 @@ int main(void) {
 
 	startGame(startscene);
 
-    return 0;
+	return 0;
 }
